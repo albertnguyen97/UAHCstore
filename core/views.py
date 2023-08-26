@@ -1,6 +1,7 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from item.models import Category, Item
 from .forms import SignUpForm
+from django.contrib.auth import views as auth_views, logout
 
 
 # Create your views here.
@@ -20,7 +21,18 @@ def contact(request):
 
 
 def signup(request):
-    form = SignUpForm()
+    if request.method == "POST":
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/login')
+    else:
+        form = SignUpForm()
     return render(request, 'core/signup.html', {
         'form': form
     })
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
