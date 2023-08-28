@@ -1,8 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Item
-from django.shortcuts import render, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from .forms import NewItemForm
-from .models import Item
 from django.shortcuts import render, redirect
 # Create your views here.
 
@@ -31,3 +30,10 @@ def new(request):
         'form': form,
         'title': 'New item',
     })
+
+
+@login_required
+def delete(request, pk):
+    item = get_object_or_404(Item, pk=pk, create_by=request.user)
+    item.delete()
+    return redirect('dashboard:index')
